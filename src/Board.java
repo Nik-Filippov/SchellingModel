@@ -50,7 +50,7 @@ public class Board {
                     success = true;
                 }
             }
-            leaveOrStay(x, y, tolerance - 1);
+            //leaveOrStay(x, y, tolerance - 1);
         }
     }
 
