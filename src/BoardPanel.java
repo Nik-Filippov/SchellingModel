@@ -64,18 +64,20 @@ public class BoardPanel extends JPanel {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        final int WIDTH = 100, HEIGHT = 100, NUM_RED = 4000, NUM_BLUE = 4000;
+        final double TOLERANCE = 0.4;
         JFrame frame = new JFrame("Board");
-        Board board = new Board(50, 50, 1000, 1000);
+        Board board = new Board(WIDTH, HEIGHT, NUM_RED, NUM_BLUE);
         BoardPanel boardPanel = new BoardPanel(board);
         frame.add(boardPanel);
         frame.setSize(800, 800); // Set an initial size
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         while(true){
-            for(int i = 0; i < 50; i++) {
-                for (int j = 0; j < 50; j++) {
+            for(int i = 0; i < WIDTH; i++) {
+                for (int j = 0; j < HEIGHT; j++) {
                     if(board.getBoard()[i][j].color != Square.Color.White && !board.getBoard()[i][j].satisfied) {
-                        board.leaveOrStay(i, j, 3);
+                        board.leaveOrStay(i, j, TOLERANCE);
                         Thread.sleep(1);
                     }
                 }

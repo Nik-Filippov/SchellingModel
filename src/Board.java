@@ -37,9 +37,11 @@ public class Board {
     }
 
     // tolearancePercent = % of the same color
-    public void leaveOrStay(int x, int y, double tolerance){
+    public void leaveOrStay(int x, int y, double tolerancePercent){
+        int tolerance = (int) (((double) countAdjacent(x, y)) * tolerancePercent);
         if (countSame(x, y) < tolerance){
             boolean success = false;
+            int counter = 0;
             while(!success){
                 Random random = new Random();
                 int i = random.nextInt(0, board.length);
@@ -48,13 +50,17 @@ public class Board {
                     board[i][j] = board[x][y];
                     board[x][y] = new Square(Square.Color.White);
                     success = true;
+                    if(counter == 1000){
+                        return;
+                    }
+                } else {
+                    counter++;
                 }
             }
-            //leaveOrStay(x, y, tolerance - 1);
         }
     }
 
-    public int countSame(int x, int y){
+    private int countSame(int x, int y){
         int countSame = 0;
         if(x - 1 >= 0){
             if(y - 1 >= 0){
@@ -142,6 +148,16 @@ public class Board {
             }
         }
         return countSame;
+    }
+
+    private int countAdjacent(int x, int y){
+        if(x == 0 && y == 0 || x == board.length && y == 0 || x == 0 && y == board[0].length || x == board.length && y == board[0].length){
+            return 3;
+        } else if(x == 0 || y == 0 || x == board.length || y == board[0].length){
+            return 5;
+        } else {
+            return 8;
+        }
     }
 
     public Square[][] getBoard(){
