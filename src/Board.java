@@ -36,6 +36,34 @@ public class Board {
         }
     }
 
+    public void reset(){
+        int redCount = numRed, blueCount = numBlue;
+        for(int i = 0; i < width; i++){
+            for(int j = 0; j < height; j++){
+                if(redCount > 0){
+                    board[i][j] = new Square(Square.Color.Red);
+                    redCount--;
+                } else if (blueCount > 0) {
+                    board[i][j] = new Square(Square.Color.Blue);
+                    blueCount--;
+                }
+                else{
+                    board[i][j] = new Square(Square.Color.White);
+                }
+            }
+        }
+        Random random = new Random();
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int x = random.nextInt(width);
+                int y = random.nextInt(height);
+                Square temp = board[i][j];
+                board[i][j] = board[x][y];
+                board[x][y] = temp;
+            }
+        }
+    }
+
     // tolearancePercent = % of the same color
     public void leaveOrStay(int x, int y, double tolerancePercent){
         int tolerance = (int) (((double) countAdjacent(x, y)) * tolerancePercent);
@@ -50,7 +78,7 @@ public class Board {
                     board[i][j] = board[x][y];
                     board[x][y] = new Square(Square.Color.White);
                     success = true;
-                    if(counter == 1000){
+                    if(counter == 100){
                         return;
                     }
                 } else {
