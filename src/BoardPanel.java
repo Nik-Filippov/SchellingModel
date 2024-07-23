@@ -120,18 +120,42 @@ public class BoardPanel extends JPanel {
     }
 
     public static void main(String[] args) {
-        final int WIDTH = 100, HEIGHT = 100, NUM_RED = 4000, NUM_BLUE = 4000;
-
         JFrame frame = new JFrame("Board");
-        Board board = new Board(WIDTH, HEIGHT, NUM_RED, NUM_BLUE);
-        BoardPanel boardPanel = new BoardPanel(board);
+        frame.setLayout(new BorderLayout());
 
-        JPanel controlPanel = new JPanel();
+        JPanel controlPanel = new JPanel(new GridLayout(0, 2));
         JButton goButton = new JButton("Go");
         JButton stopButton = new JButton("Stop");
         JButton restartButton = new JButton("Restart");
         JSlider toleranceSlider = new JSlider(0, 100, 30);
         JLabel toleranceLabel = new JLabel("Tolerance: 0.30");
+
+        JLabel widthLabel = new JLabel("Width:");
+        JTextField widthField = new JTextField("100");
+        JLabel heightLabel = new JLabel("Height:");
+        JTextField heightField = new JTextField("100");
+        JLabel numRedLabel = new JLabel("Number of Red Squares:");
+        JTextField numRedField = new JTextField("4000");
+        JLabel numBlueLabel = new JLabel("Number of Blue Squares:");
+        JTextField numBlueField = new JTextField("4000");
+
+        controlPanel.add(widthLabel);
+        controlPanel.add(widthField);
+        controlPanel.add(heightLabel);
+        controlPanel.add(heightField);
+        controlPanel.add(numRedLabel);
+        controlPanel.add(numRedField);
+        controlPanel.add(numBlueLabel);
+        controlPanel.add(numBlueField);
+        controlPanel.add(goButton);
+        controlPanel.add(stopButton);
+        controlPanel.add(restartButton);
+        controlPanel.add(new JLabel(""));
+        controlPanel.add(toleranceSlider);
+        controlPanel.add(toleranceLabel);
+
+        Board board = new Board(100, 100, 4000, 4000);
+        BoardPanel boardPanel = new BoardPanel(board);
 
         goButton.addActionListener(new ActionListener() {
             @Override
@@ -150,7 +174,12 @@ public class BoardPanel extends JPanel {
         restartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Board newBoard = new Board(WIDTH, HEIGHT, NUM_RED, NUM_BLUE);
+                int width = Integer.parseInt(widthField.getText());
+                int height = Integer.parseInt(heightField.getText());
+                int numRed = Integer.parseInt(numRedField.getText());
+                int numBlue = Integer.parseInt(numBlueField.getText());
+
+                Board newBoard = new Board(width, height, numRed, numBlue);
                 boardPanel.restart(newBoard);
             }
         });
@@ -165,18 +194,10 @@ public class BoardPanel extends JPanel {
             }
         });
 
-        controlPanel.add(goButton);
-        controlPanel.add(stopButton);
-        controlPanel.add(restartButton);
-        controlPanel.add(new JLabel("Tolerance:"));
-        controlPanel.add(toleranceSlider);
-        controlPanel.add(toleranceLabel);
-
-        frame.setLayout(new BorderLayout());
+        frame.add(controlPanel, BorderLayout.NORTH);
         frame.add(boardPanel, BorderLayout.CENTER);
-        frame.add(controlPanel, BorderLayout.SOUTH);
 
-        frame.setSize(800, 800); // Set an initial size
+        frame.setSize(800, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
