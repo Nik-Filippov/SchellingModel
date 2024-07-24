@@ -28,7 +28,7 @@ public class BoardPanel extends JPanel {
         });
 
         // Create a Timer to perform periodic updates
-        timer = new Timer(16, new ActionListener() { // Update every 16 ms (~60 FPS)
+        timer = new Timer(2, new ActionListener() { // Update every 16 ms (~60 FPS)
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (running) {
@@ -56,13 +56,11 @@ public class BoardPanel extends JPanel {
         for (int step = 0; step < 100; step++) {
             int i = updateStep / height;
             int j = updateStep % height;
-
             if (i < width && j < height) {
                 if (board.getBoard()[i][j].color != Square.Color.White && !board.getBoard()[i][j].satisfied) {
                     board.leaveOrStay(i, j, tolerance);
                 }
             }
-
             updateStep++;
             if (updateStep >= width * height) {
                 updateStep = 0;
@@ -79,10 +77,18 @@ public class BoardPanel extends JPanel {
             for (int j = 0; j < squares[i].length; j++) {
                 switch (squares[i][j].color) {
                     case Red:
-                        g.setColor(java.awt.Color.RED);
+                        if(squares[i][j].satisfied){
+                            g.setColor(java.awt.Color.PINK);
+                        } else {
+                            g.setColor(java.awt.Color.RED);
+                        }
                         break;
                     case Blue:
-                        g.setColor(java.awt.Color.BLUE);
+                        if(squares[i][j].satisfied){
+                            g.setColor(java.awt.Color.CYAN);
+                        } else {
+                            g.setColor(java.awt.Color.BLUE);
+                        }
                         break;
                     case White:
                         g.setColor(java.awt.Color.WHITE);

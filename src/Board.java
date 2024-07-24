@@ -36,55 +36,59 @@ public class Board {
         }
     }
 
-    public void reset(){
-        int redCount = numRed, blueCount = numBlue;
-        for(int i = 0; i < width; i++){
-            for(int j = 0; j < height; j++){
-                if(redCount > 0){
-                    board[i][j] = new Square(Square.Color.Red);
-                    redCount--;
-                } else if (blueCount > 0) {
-                    board[i][j] = new Square(Square.Color.Blue);
-                    blueCount--;
-                }
-                else{
-                    board[i][j] = new Square(Square.Color.White);
-                }
-            }
-        }
-        Random random = new Random();
+    public void markSatisfied(double tolerancePercent){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                int x = random.nextInt(width);
-                int y = random.nextInt(height);
-                Square temp = board[i][j];
-                board[i][j] = board[x][y];
-                board[x][y] = temp;
+                int tolerance = (int) (((double) countAdjacent(i, j)) * tolerancePercent);
+                if(board[i][j].color != Square.Color.White){
+                    if(countSame(i, j, board[i][j].color) >= tolerance) {
+                        board[i][j].satisfied = true;
+                    } else {
+                        board[i][j].satisfied = false;
+                    }
+                }
             }
         }
     }
 
     // tolearancePercent = % of the same color
-    public void leaveOrStay(int x, int y, double tolerancePercent){
+    public boolean leaveOrStay(int x, int y, double tolerancePercent){
+        //markSatisfied(tolerancePercent);
         int tolerance = (int) (((double) countAdjacent(x, y)) * tolerancePercent);
         if (countSame(x, y) < tolerance){
             boolean success = false;
-            int counter = 0;
-            while(!success){
-                Random random = new Random();
-                int i = random.nextInt(0, board.length);
-                int j = random.nextInt(0, board[0].length);
-                if (board[i][j].color == Square.Color.White && countSame(i, j, board[x][y].color) >= tolerance) {
-                    board[i][j] = board[x][y];
-                    board[x][y] = new Square(Square.Color.White);
-                    success = true;
-                    if(counter == 100){
-                        return;
+            Random random = new Random();
+            int i = random.nextInt(0, board.length);
+            int j = random.nextInt(0, board[0].length);
+            for(int k = i; k < board.length; k++){
+                for(int l = j; l < board[0].length; l++){
+                    if (board[k][l].color == Square.Color.White && countSame(k, l, board[x][y].color) >= tolerance) {
+                        board[k][l] = board[x][y];
+                        board[x][y] = new Square(Square.Color.White);
+                        success = true;
+                        //markSatisfied(tolerancePercent);
+                        return true;
                     }
-                } else {
-                    counter++;
                 }
             }
+            if(!success){
+                for(int k = 0; k < board.length; k++){
+                    for(int l = 0; l < board[0].length; l++){
+                        if (board[k][l].color == Square.Color.White && countSame(k, l, board[x][y].color) >= tolerance) {
+                            board[k][l] = board[x][y];
+                            board[x][y] = new Square(Square.Color.White);
+                            success = true;
+                            //markSatisfied(tolerancePercent);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        if(tolerancePercent > 0){
+            return leaveOrStay(x, y, tolerancePercent - 0.1);
+        } else {
+            return false;
         }
     }
 
@@ -175,6 +179,7 @@ public class Board {
                 countSame++;
             }
         }
+        System.out.println(countSame);
         return countSame;
     }
 
